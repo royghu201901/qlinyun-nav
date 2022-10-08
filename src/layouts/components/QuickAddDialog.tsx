@@ -18,6 +18,8 @@ import {
   FormControlLabel,
   Switch,
   Snackbar,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core'
 import {
   Autocomplete,
@@ -28,6 +30,9 @@ import {
   makeStyles,
   createStyles
 } from '@material-ui/core/styles'
+import {
+  Close as CloseIcon
+} from '@material-ui/icons';
 
 import type {
   ModuleProps,
@@ -52,7 +57,14 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       width: '100%',
       marginBottom: theme.spacing(2),
+      '& .MuiOutlinedInput-adornedEnd': {
+        paddingRight: '6px !important'
+      },
     },
+    actions: {
+      marginRight: theme.spacing(2),
+      marginBottom: theme.spacing(1),
+    }
   }),
 )
 
@@ -75,9 +87,6 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
 
   // const handleSelectModule = (event: ChangeEvent<{ value: unknown }>) => {
   //   setModule(event.target.value as string)
-  // }
-  // const handleClearModule = () => {
-  //   setModule('')
   // }
 
   // 修改导航表单
@@ -192,6 +201,23 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
                 fullWidth
                 size="small"
                 variant="outlined"
+                InputProps={{
+                  endAdornment: 
+                    <InputAdornment position="end">
+                      {navCard.title &&
+                        <IconButton
+                          aria-label="toggle close"
+                          size="small"
+                          onClick={() => setNavCard({
+                            ...navCard,
+                            title: ''
+                          })}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      }
+                    </InputAdornment>,
+                }}
                 onChange={handleChangeForm}
               />
             </FormControl>
@@ -204,6 +230,23 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
                 fullWidth
                 size="small"
                 variant="outlined"
+                InputProps={{
+                  endAdornment: 
+                    <InputAdornment position="end">
+                      {navCard.image &&
+                        <IconButton
+                          aria-label="toggle close"
+                          size="small"
+                          onClick={() => setNavCard({
+                            ...navCard,
+                            image: ''
+                          })}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      }
+                    </InputAdornment>,
+                }}
                 onChange={handleChangeForm}
               />
             </FormControl>
@@ -216,6 +259,23 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
                 fullWidth
                 size="small"
                 variant="outlined"
+                InputProps={{
+                  endAdornment: 
+                    <InputAdornment position="end">
+                      {navCard.description &&
+                        <IconButton
+                          aria-label="toggle close"
+                          size="small"
+                          onClick={() => setNavCard({
+                            ...navCard,
+                            description: ''
+                          })}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      }
+                    </InputAdornment>,
+                }}
                 onChange={handleChangeForm}
               />
             </FormControl>
@@ -228,6 +288,23 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
                 fullWidth
                 size="small"
                 variant="outlined"
+                InputProps={{
+                  endAdornment: 
+                    <InputAdornment position="end">
+                      {navCard.url &&
+                        <IconButton
+                          aria-label="toggle close"
+                          size="small"
+                          onClick={() => setNavCard({
+                            ...navCard,
+                            url: ''
+                          })}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      }
+                    </InputAdornment>,
+                }}
                 onChange={handleChangeForm}
               />
             </FormControl>
@@ -246,11 +323,11 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
             </FormControl>
           </form>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => handleCancel({}, 'escapeKeyDown')} color="primary">
+        <DialogActions className={classes.actions}>
+          <Button onClick={() => handleCancel({}, 'escapeKeyDown')} variant="contained">
             取消
           </Button>
-          <Button onClick={handleSubmit} color="primary">
+          <Button onClick={handleSubmit} color="primary" variant="contained">
             确定
           </Button>
         </DialogActions>
