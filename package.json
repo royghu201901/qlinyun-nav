@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "author": "royghu201901 <royghu201901@hotmail.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "4.0.0-alpha.61",
+    "@types/overlayscrollbars": "^1.12.1",
+    "axios": "^0.27.2",
+    "copy-to-clipboard": "^3.3.2",
+    "overlayscrollbars-react": "0.2.3",
+    "umi": "^4.0.21"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@umijs/fabric": "^3.0.0",
+    "eslint": "^8.23.1",
+    "prettier": "^2",
+    "prettier-plugin-organize-imports": "^2",
+    "prettier-plugin-packagejson": "^2",
+    "typescript": "^4.1.2"
+  }
+}
