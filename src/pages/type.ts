@@ -15,8 +15,9 @@ export interface CardProps {
   image: string
   description: string
   url: string
-  label?: boolean
+  label?: number
   environmentId?: number
+  environmentName?: string
 }
 
 export interface ModuleProps {

@@ -4,7 +4,8 @@ import type {
 } from 'react'
 import {
   useState,
-  useEffect
+  useEffect,
+  useCallback,
 } from 'react'
 import {
   Button,
@@ -69,27 +70,43 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export interface QuickAddDialogProps {
+  id?: number
+  navData?: CardProps
   open: boolean
   onClose: () => void
 }
 
-const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
+const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
   const classes = useStyles()
 
   const [navCard, setNavCard] = useState<CardProps>({
+    id,
     title: '',
     image: '',
     description: '',
     url: '',
-    label: false,
-    environmentId: undefined
+    label: 0,
+    environmentId: undefined,
+    environmentName: ''
   })
 
-  // const handleSelectModule = (event: ChangeEvent<{ value: unknown }>) => {
-  //   setModule(event.target.value as string)
-  // }
+  const [moduleData, setModule] = useState<ModuleProps>({
+    id: undefined,
+    name: ''
+  })
 
-  // 修改导航表单
+  // 修改导航回填
+  const initNavData = useCallback(() => {
+    if (navData) {
+      setNavCard(navData)
+      setModule({
+        id: navData.environmentId,
+        name: navData.environmentName || ''
+      })
+    }
+  }, [navData])
+
+  // 修改导航表单某一项
   const handleChangeForm = (event: ChangeEvent<HTMLInputElement>) => {
     setNavCard({
       ...navCard,
@@ -125,7 +142,7 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
       image: '',
       description: '',
       url: '',
-      label: false,
+      label: 0,
       environmentId: undefined
     })
     onClose()
@@ -153,8 +170,12 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
     getModuleList()
   },[])
 
+  useEffect(() => {
+    initNavData()
+  },[initNavData])
+
   return (
-    <div>
+    <>
       <Dialog
         open={open}
         onClose={handleCancel}
@@ -163,18 +184,22 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
         scroll='paper'
         aria-labelledby="quick-dialog-title"
       >
-        <DialogTitle id="quick-dialog-title" className={classes.title}>快速添加</DialogTitle>
+        <DialogTitle id="quick-dialog-title" className={classes.title}>
+          {id ? '修改导航' : '快速添加'}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            快速添加导航及其指定模块（所有选项必填）
+            {id ? '修改' : '快速添加'}导航及其指定模块（所有选项必填）
           </DialogContentText>
           <form className={classes.container}>
             <FormControl required className={classes.formControl}>
               <Autocomplete
                 id="quick-dialog-select"
+                value={moduleData}
                 size="small"
                 options={moduleList}
                 getOptionLabel={(moduleItem: ModuleProps) => moduleItem.name}
+                getOptionSelected={(option,moduleItem) => option.id === moduleItem.id}
                 onChange={(event, value) => {
                   setNavCard({
                     ...navCard,
@@ -312,7 +337,7 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={navCard.label}
+                    checked={!!navCard.label}
                     onChange={handleChangeLabel}
                     name="label"
                     inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -337,7 +362,7 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({open,onClose}) => {
           { errorMessage }
         </Alert>
       </Snackbar>
-    </div>
+    </>
   );
 }
 

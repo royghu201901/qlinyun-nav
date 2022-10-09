@@ -11,7 +11,7 @@ export default {
   ],
   proxy: {
     '/verbCenter': {
-      'target': 'http://192.168.8.106:8111/verbCenter',
+      'target': 'http://192.168.8.123:8111/verbCenter',
       'changeOrigin': true,
       'pathRewrite': { '^/verbCenter' : '' },
       'secure': false,

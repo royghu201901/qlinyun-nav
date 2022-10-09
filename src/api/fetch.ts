@@ -43,3 +43,12 @@ export function saveWebsiteApi<T>(data: CardProps) {
     data
   })
 }
+
+/**
+ * 获取导航列表
+ */
+export function deleteWebsiteApi<T>(id: number) {
+  return axios.request<T>({
+    url: `/delete_website/${id}`
+  })
+}

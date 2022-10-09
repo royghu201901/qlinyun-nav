@@ -4,8 +4,15 @@ import {
   makeStyles,
   createStyles
 } from '@material-ui/core/styles'
-import { Box } from '@material-ui/core'
+import {
+  Box,
+  IconButton,
+  TextField,
+} from '@material-ui/core'
 import { Skeleton } from '@material-ui/lab'
+import {
+  Edit as EditIcon
+} from '@material-ui/icons'
 import MyCard from './components/MyCard'
 
 import type {
@@ -15,6 +22,7 @@ import type {
 
 import {
   getNavcationListApi,
+  // saveModuleApi,
 } from '@/api/fetch'
 
 // import cardList from './data'
@@ -55,7 +63,21 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.black,
       marginBottom: theme.spacing(2),
       width: '100%',
+      height: '45px',
+      display: 'flex',
+      alignItems: 'center',
+      '&:hover .moduleEditBtn': {
+        display: 'inline-block',
+        marginLeft: theme.spacing(1)
+      },
+      '& .moduleEditBtn': {
+        display: 'none'
+      }
     },
+    moduleInput: {
+      margin: theme.spacing(1),
+      marginBottom: theme.spacing(2),
+    }
   })
 )
 
@@ -64,11 +86,34 @@ const Module = (props: ModuleInterfaces) => {
   const { module } = props
   const { name, cards } = module
 
+  const [editStatus, setEditStatus] = useState<boolean>(false)
+  const handleEditModule = () => {
+    setEditStatus(!editStatus)
+  }
+
   return (
     <div className={classes.module}>
-      <div className={classes.moduleTitle}>
-        {name}({cards.length})
-      </div>
+      {!editStatus
+        ?
+          <div className={classes.moduleTitle}>
+            {name}({cards.length})
+            <IconButton
+              size="small"
+              className="moduleEditBtn"
+              aria-label="edit module"
+              onClick={handleEditModule}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </div>
+        :
+          <TextField
+            label="模块名称"
+            size="small"
+            className={classes.moduleInput}
+            margin="dense"
+          />
+      }
       <div className={classes.moduleContainer}>
         {cards.map((card) => (
           <MyCard
@@ -79,6 +124,7 @@ const Module = (props: ModuleInterfaces) => {
             description={card.description}
             url={card.url}
             label={card.label}
+            environmentName={name}
           />
         ))}
       </div>

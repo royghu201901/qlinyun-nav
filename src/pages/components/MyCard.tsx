@@ -20,12 +20,21 @@ import {
 import Alert from '@material-ui/lab/Alert'
 import {
   Favorite as FavoriteIcon,
-  Share as ShareIcon
+  Share as ShareIcon,
+  Edit as EditIcon
 } from '@material-ui/icons'
+import { teal } from '@material-ui/core/colors'
 
 import type {
   CardProps,
 } from '../type'
+
+
+import QuickAddDialog from '@/layouts/components/QuickAddDialog'
+
+import {
+  saveWebsiteApi,
+} from '@/api/fetch'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,10 +56,35 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MyCard(props: CardProps) {
   const classes = useStyles()
-  const { title, image, description, url, label } = props
+  const { id, title, image, description, url, label } = props
+  const [favorite, setFavorite] = useState(!!label) 
 
   const [messageShow, setMessageShow] = useState(false)
 
+
+  // 修改导航弹窗
+  const [quickAddDialogOpen, setQuickAddDialogOpen] = useState(false)
+  const handleOpenQuickAddDialog = () => {
+    setQuickAddDialogOpen(true)
+  }
+  const handleCloseQuickAddDialog = () => {
+    setQuickAddDialogOpen(false)
+  }
+
+  // 添加到关注列表
+  const handleChangeFavorite = async () => {
+    try {
+      await saveWebsiteApi<CardProps>({
+        ...props,
+        label: favorite ? 0 : 1
+      })
+      setFavorite(!favorite)
+    } catch (e: any) {
+      console.log(e.message)
+    }
+  }
+
+  // 分享链接
   const handleShare = () => {
     copy(url)
     setMessageShow(true)
@@ -83,8 +117,11 @@ export default function MyCard(props: CardProps) {
           </CardActionArea>
         </Link>
         <CardActions className={classes.actions}>
-          <IconButton aria-label="add to favorites">
-            <FavoriteIcon color={label ? 'secondary' : 'inherit'} />
+          <IconButton aria-label="add to favorites" onClick={() => handleChangeFavorite()}>
+            <FavoriteIcon color={favorite ? 'secondary' : 'inherit'} />
+          </IconButton>
+          <IconButton aria-label="edit card" onClick={handleOpenQuickAddDialog}>
+            <EditIcon style={{ color: teal[800] }} />
           </IconButton>
           <IconButton aria-label="share" onClick={() => handleShare()}>
             <ShareIcon color="primary" />
@@ -96,6 +133,9 @@ export default function MyCard(props: CardProps) {
           地址已成功复制到剪贴板！
         </Alert>
       </Snackbar>
+      {quickAddDialogOpen &&
+        <QuickAddDialog id={id} navData={props} open={quickAddDialogOpen} onClose={() => handleCloseQuickAddDialog()} />
+      }
     </>
   )
 }
