@@ -21,7 +21,7 @@ import type {
 } from './type'
 
 import {
-  getNavcationListApi,
+  getNavigationListApi,
   // saveModuleApi,
 } from '@/api/fetch'
 
@@ -137,13 +137,13 @@ const MyBoard = () => {
 
   const [loading, setLoading] = useState<boolean>(false)
 
-  const [navcationList, setNavcationList] = useState<object[]>([])
+  const [navigationList, setNavigationList] = useState<object[]>([])
 
-  const getNavcationList = async () => {
+  const getNavigationList = async () => {
     try {
       setLoading(true)
-      const data = await getNavcationListApi<CardListInterface[]>()
-      setNavcationList(data)
+      const data = await getNavigationListApi<CardListInterface[]>()
+      setNavigationList(data)
     } catch (e: any) {
       console.log(e)
     } finally {
@@ -152,12 +152,12 @@ const MyBoard = () => {
   }
 
   useEffect(() => {
-    getNavcationList()
+    getNavigationList()
   },[])
 
   return (
     <div className={loading ? classes.loadingBoard : classes.myBoard}>
-      {(loading ? Array.from(new Array(15)) : navcationList).map((module: CardListInterface, index: number) => (
+      {(loading ? Array.from(new Array(15)) : navigationList).map((module: CardListInterface, index: number) => (
         module ? 
           (
             <Module

@@ -166,7 +166,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const MyNavcation = () => {
+const MyNavigation = () => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null)
@@ -388,4 +388,4 @@ const MyNavcation = () => {
   )
 }
 
-export default MyNavcation
+export default MyNavigation

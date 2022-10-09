@@ -7,7 +7,7 @@ import type {
 /**
  * 获取导航列表
  */
-export function getNavcationListApi<T>() {
+export function getNavigationListApi<T>() {
   return axios.request<T>({
     url: '/list'
   })
