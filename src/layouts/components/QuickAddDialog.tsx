@@ -132,7 +132,7 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
     }
   }
 
-  // 取消清空
+  // 取消按钮，清空表单
   const handleCancel = (event: any, reason: string) => {
     if (reason && reason === 'backdropClick') {
       return

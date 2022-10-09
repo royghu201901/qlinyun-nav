@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react'
 import { useState, useEffect } from 'react'
 import type { Theme } from '@material-ui/core/styles'
 import {
@@ -8,21 +9,28 @@ import {
   Box,
   IconButton,
   TextField,
+  Snackbar,
+  Button,
 } from '@material-ui/core'
-import { Skeleton } from '@material-ui/lab'
 import {
-  Edit as EditIcon
+  Skeleton,
+  Alert,
+} from '@material-ui/lab'
+import {
+  Edit as EditIcon,
+  Sync as SyncIcon,
 } from '@material-ui/icons'
 import MyCard from './components/MyCard'
 
 import type {
   ModuleInterfaces,
-  CardListInterface
+  CardListInterface,
+  ModuleProps,
 } from './type'
 
 import {
   getNavigationListApi,
-  // saveModuleApi,
+  saveModuleApi,
 } from '@/api/fetch'
 
 // import cardList from './data'
@@ -77,6 +85,9 @@ const useStyles = makeStyles((theme: Theme) =>
     moduleInput: {
       margin: theme.spacing(1),
       marginBottom: theme.spacing(2),
+    },
+    moduleSyncBtn: {
+      marginLeft: theme.spacing(1)
     }
   })
 )
@@ -84,51 +95,103 @@ const useStyles = makeStyles((theme: Theme) =>
 const Module = (props: ModuleInterfaces) => {
   const classes = useStyles()
   const { module } = props
-  const { name, cards } = module
+  const { id, name, cards } = module
 
-  const [editStatus, setEditStatus] = useState<boolean>(false)
-  const handleEditModule = () => {
-    setEditStatus(!editStatus)
+  // 显示修改模块名称的输入框
+  const [editStatus, setEditStatus] = useState(false)
+  const handleShowTextField = () => {
+    setEditStatus(true)
+  }
+
+  // 修改模块名称
+  const [moduleData, setModuleData] = useState<ModuleProps>({
+    id,
+    name,
+  })
+  const handleEditModule = (event: ChangeEvent<HTMLInputElement>) => {
+    setModuleData({
+      ...moduleData,
+      name: event.target.value
+    })
+  }
+
+  // 错误内容
+  const [errorMessage, setErrorMessage] = useState('')
+  // 显示错误
+  const [errorShow, setErrorShow] = useState(false)
+
+  // 同步模块名称
+  const handleSyncModule = async () => {
+    try {
+      await saveModuleApi<ModuleProps>(moduleData)
+      setEditStatus(false)
+    } catch (e: any) {
+      setErrorMessage(e.message)
+      setErrorShow(true)
+      // console.log(e.message)
+    }
   }
 
   return (
-    <div className={classes.module}>
-      {!editStatus
-        ?
-          <div className={classes.moduleTitle}>
-            {name}({cards.length})
-            <IconButton
-              size="small"
-              className="moduleEditBtn"
-              aria-label="edit module"
-              onClick={handleEditModule}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
-          </div>
-        :
-          <TextField
-            label="模块名称"
-            size="small"
-            className={classes.moduleInput}
-            margin="dense"
-          />
-      }
-      <div className={classes.moduleContainer}>
-        {cards.map((card) => (
-          <MyCard
-            id={card.id}
-            key={card.id}
-            title={card.title}
-            image={card.image}
-            description={card.description}
-            url={card.url}
-            label={card.label}
-            environmentName={name}
-          />
-        ))}
+    <>
+      <div className={classes.module}>
+        {!editStatus
+          ?
+            <div className={classes.moduleTitle}>
+              {name}({cards.length})
+              <IconButton
+                size="small"
+                className="moduleEditBtn"
+                aria-label="edit module"
+                onClick={handleShowTextField}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </div>
+          :
+            <>
+              <TextField
+                value={moduleData.name}
+                label="模块名称"
+                size="small"
+                className={classes.moduleInput}
+                margin="dense"
+                onChange={handleEditModule}
+              />
+              <Button
+                variant="contained"
+                size="small"
+                color="primary"
+                className={classes.moduleSyncBtn}
+                disableElevation
+                startIcon={<SyncIcon />}
+                onClick={handleSyncModule}
+              >
+                同步模块名称
+              </Button>
+            </>
+        }
+        <div className={classes.moduleContainer}>
+          {cards.map((card) => (
+            <MyCard
+              id={card.id}
+              key={card.id}
+              title={card.title}
+              image={card.image}
+              description={card.description}
+              url={card.url}
+              label={card.label}
+              environmentName={name}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={errorShow} autoHideDuration={3000} onClose={() => setErrorShow(false)}>
+        <Alert onClose={() => setErrorShow(false)} severity="error">
+          { errorMessage }
+        </Alert>
+      </Snackbar>
+    </>
   )
 }
 
