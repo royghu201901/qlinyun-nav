@@ -165,7 +165,6 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
     }
   }
 
-
   useEffect(() => {
     getModuleList()
   },[])

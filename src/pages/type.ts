@@ -7,6 +7,7 @@ export interface CardListInterface {
 export interface ModuleInterfaces {
   index: number
   module: CardListInterface
+  refresh: () => void
 }
 
 export interface CardProps {

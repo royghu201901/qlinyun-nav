@@ -2,15 +2,20 @@ import type { ChangeEvent } from 'react'
 import { useState, useEffect } from 'react'
 import type { Theme } from '@material-ui/core/styles'
 import {
+  alpha,
   makeStyles,
   createStyles
 } from '@material-ui/core/styles'
+// import {
+//   grey
+// } from '@material-ui/core/colors'
 import {
   Box,
   IconButton,
   TextField,
   Snackbar,
   Button,
+  Fade,
 } from '@material-ui/core'
 import {
   Skeleton,
@@ -40,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     myBoard: {
       // height: 'calc(100vh - 48px)',
       // overflow: 'auto',
-      padding: theme.spacing(3)
+      padding: theme.spacing(1, 3)
     },
     loadingBoard: {
       padding: theme.spacing(3),
@@ -68,10 +73,9 @@ const useStyles = makeStyles((theme: Theme) =>
     moduleTitle: {
       fontSize: '24px',
       fontWeight: 'bold',
-      color: theme.palette.common.black,
-      marginBottom: theme.spacing(2),
+      color: alpha(theme.palette.common.black, 0.75),
       width: '100%',
-      height: '45px',
+      height: '69px',
       display: 'flex',
       alignItems: 'center',
       '&:hover .moduleEditBtn': {
@@ -80,21 +84,42 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& .moduleEditBtn': {
         display: 'none'
-      }
+      },
+    },
+    moduleInputWrap: {
+      display: 'flex',
+      alignItems: 'center',
+      '& .MuiFormLabel-root.Mui-focused': {
+        color: theme.palette.common.black,
+      },
+      '& .MuiInput-underline:after': {
+        borderBottom: theme.palette.common.black,
+      },
     },
     moduleInput: {
       margin: theme.spacing(1),
       marginBottom: theme.spacing(2),
     },
+    moduleInputLabelColor: {
+      color: alpha(theme.palette.common.black, 0.75),
+    },
+    moduleInputColor: {
+      color: alpha(theme.palette.common.black, 0.75),
+    },
     moduleSyncBtn: {
-      marginLeft: theme.spacing(1)
+      color: theme.palette.common.white,
+      marginLeft: theme.spacing(1),
+      backgroundColor: alpha(theme.palette.common.black, 0.32),
+      '&:hover': {
+        backgroundColor: alpha(theme.palette.common.black, 0.25)
+      }
     }
   })
 )
 
 const Module = (props: ModuleInterfaces) => {
   const classes = useStyles()
-  const { module } = props
+  const { module, refresh } = props
   const { id, name, cards } = module
 
   // 显示修改模块名称的输入框
@@ -125,11 +150,17 @@ const Module = (props: ModuleInterfaces) => {
     try {
       await saveModuleApi<ModuleProps>(moduleData)
       setEditStatus(false)
+      refresh()
     } catch (e: any) {
       setErrorMessage(e.message)
       setErrorShow(true)
       // console.log(e.message)
     }
+  }
+
+  // 取消同步模块名称
+  const handleSyncCancel = () => {
+    setEditStatus(false)
   }
 
   return (
@@ -149,27 +180,45 @@ const Module = (props: ModuleInterfaces) => {
               </IconButton>
             </div>
           :
-            <>
-              <TextField
-                value={moduleData.name}
-                label="模块名称"
-                size="small"
-                className={classes.moduleInput}
-                margin="dense"
-                onChange={handleEditModule}
-              />
-              <Button
-                variant="contained"
-                size="small"
-                color="primary"
-                className={classes.moduleSyncBtn}
-                disableElevation
-                startIcon={<SyncIcon />}
-                onClick={handleSyncModule}
-              >
-                同步模块名称
-              </Button>
-            </>
+            <Fade in={editStatus}>
+              <div className={classes.moduleInputWrap}>
+                <TextField
+                  value={moduleData.name}
+                  label="模块名称"
+                  size="small"
+                  margin="dense"
+                  className={classes.moduleInput}
+                  InputLabelProps={{
+                    className: classes.moduleInputLabelColor
+                  }}
+                  InputProps={{
+                    className: classes.moduleInputColor
+                  }}
+                  onChange={handleEditModule}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  className={classes.moduleSyncBtn}
+                  disableElevation
+                  startIcon={
+                    <SyncIcon />
+                  }
+                  onClick={handleSyncModule}
+                >
+                  同步模块名称
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  className={classes.moduleSyncBtn}
+                  disableElevation
+                  onClick={handleSyncCancel}
+                >
+                  取消
+                </Button>
+              </div>
+            </Fade>
         }
         <div className={classes.moduleContainer}>
           {cards.map((card) => (
@@ -198,7 +247,7 @@ const Module = (props: ModuleInterfaces) => {
 const MyBoard = () => {
   const classes = useStyles()
 
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState(false)
 
   const [navigationList, setNavigationList] = useState<object[]>([])
 
@@ -227,6 +276,7 @@ const MyBoard = () => {
               index={index}
               key={module.id}
               module={module}
+              refresh={getNavigationList}
             />
           ) :
           (

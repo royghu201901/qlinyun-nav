@@ -32,6 +32,7 @@ import {
   createStyles
 } from '@material-ui/core/styles'
 import QuickAddDialog from './QuickAddDialog'
+import ModuleAddDialog from './ModuleAddDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -210,10 +211,25 @@ const MyNavigation = () => {
   // 快速添加弹窗
   const [quickAddDialogOpen, setQuickAddDialogOpen] = useState(false)
   const handleOpenQuickAddDialog = () => {
+    handleMenuClose()
     setQuickAddDialogOpen(true)
   }
   const handleCloseQuickAddDialog = () => {
+    handleMenuClose()
     setQuickAddDialogOpen(false)
+  }
+
+  // 模块添加、修改弹窗
+  const [moduleAddDialogOpen, setModuleAddDialogOpen] = useState(false)
+  const [moduleAddDialogFlag, setModuleAddDialogFlag] = useState(false)
+  const handleOpenModuleAddDialog = (flag: boolean) => {
+    setModuleAddDialogFlag(flag)
+    setModuleAddDialogOpen(true)
+    handleMenuClose()
+  }
+  const handleCloseModuleAddDialog = () => {
+    setModuleAddDialogOpen(false)
+    handleMenuClose()
   }
 
   // 右侧菜单
@@ -240,10 +256,10 @@ const MyNavigation = () => {
         </List>
       </MenuItem>
       <Divider className={classes.divider} variant="middle" />
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>添加模块</MenuItem>
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>编辑模块</MenuItem>
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>添加导航地址</MenuItem>
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>修改导航地址</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={() => handleOpenModuleAddDialog(false)}>添加模块</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={() => handleOpenModuleAddDialog(true)}>编辑模块</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={handleOpenQuickAddDialog}>添加导航地址</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>删除导航地址</MenuItem>
       <Divider className={classes.divider} variant="middle" />
       <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>代码仓库地址</MenuItem>
     </Menu>
@@ -384,6 +400,7 @@ const MyNavigation = () => {
       {renderMobileMenu}
       {renderMenu}
       <QuickAddDialog open={quickAddDialogOpen} onClose={() => handleCloseQuickAddDialog()} />
+      <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} onClose={() => handleCloseModuleAddDialog()} />
     </div>
   )
 }

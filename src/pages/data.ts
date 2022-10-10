@@ -7,7 +7,7 @@ const cardList: CardListInterface[] = [
     id: 100,
     name: '内部系统导航',
     cards: [
-      { id: 1, title: 'GitLab', image: 'https://kylin-static.oss-cn-hangzhou.aliyuncs.com/navigation/gitlab.png', url: 'http://nav.qlinyun.com:9088/', description: '内部代码仓库', label: true },
+      { id: 1, title: 'GitLab', image: 'https://kylin-static.oss-cn-hangzhou.aliyuncs.com/navigation/gitlab.png', url: 'http://nav.qlinyun.com:9088/', description: '内部代码仓库', label: 1 },
       { id: 2, title: 'Confluence', image: 'https://kylin-static.oss-cn-hangzhou.aliyuncs.com/navigation/confluence.png', url: 'http://nav.qlinyun.com:9089/index.action#all-updates', description: '项目文档' },
       { id: 3, title: 'Jenkins', image: 'https://kylin-static.oss-cn-hangzhou.aliyuncs.com/navigation/jenkins.png', url: 'http://nav.qlinyun.com:9083/login?from=%2F', description: '发布系统' },
       { id: 4, title: '禅道', image: 'https://kylin-static.oss-cn-hangzhou.aliyuncs.com/navigation/zentao.png', url: 'http://nav.qlinyun.com/user-login-Lw==.html', description: '禅道' },
