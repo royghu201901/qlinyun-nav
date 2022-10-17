@@ -232,6 +232,12 @@ const MyNavigation = () => {
     handleMenuClose()
   }
 
+  const handleToRepository = () => {
+    const link = 'https://github.com/royghu201901/qlinyun-nav'
+    window.open(link, '_blank')
+    handleMenuClose()
+  }
+
   // 右侧菜单
   const menuId = 'help-menu';
   const renderMenu = (
@@ -261,7 +267,7 @@ const MyNavigation = () => {
       <MenuItem className={classes.renderMenuItem} onClick={handleOpenQuickAddDialog}>添加导航地址</MenuItem>
       <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>删除导航地址</MenuItem>
       <Divider className={classes.divider} variant="middle" />
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>代码仓库地址</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={handleToRepository}>代码仓库地址</MenuItem>
     </Menu>
   )
 
