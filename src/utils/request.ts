@@ -15,7 +15,7 @@ axios.defaults.unique = false
 
 // 创建axios实例
 const service: AxiosInstance = axios.create({
-  baseURL: '/verbCenter/environment',
+  baseURL: '/verbCenter',
   // 请求超时时间
   timeout: 10 * 60 * 1000,
 })

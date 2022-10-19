@@ -6,6 +6,8 @@ export interface CardListInterface {
 
 export interface ModuleInterfaces {
   index: number
+  canDelete?: boolean
+  handleChangeDeleteStatus: (flag: boolean) => void
   module: CardListInterface
   refresh: () => void
 }
@@ -24,4 +26,29 @@ export interface CardProps {
 export interface ModuleProps {
   id?: number
   name: string
+}
+
+export interface ContextInterface {
+  prop: ContextProps
+}
+
+export interface ContextProps {
+  loading: boolean
+  canDelete: boolean
+  handleChangeDeleteStatus: (flag: boolean) => void
+  navigationList: CardListInterface[]
+  getNavigationList: () => void
+}
+
+export interface LogProps {
+  beforeDate: string
+  afterDate: string
+}
+
+export interface LogInterface {
+  id: number
+  message: string
+  changeTime: string
+  beforeMessage: string
+  afterMessage: string
 }

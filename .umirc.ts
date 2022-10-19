@@ -6,12 +6,14 @@ export default {
       title: '国贸数字研发部导航',
       routes: [
         { path: '/', component: '@/pages/index' },
+        { path: '/:type', component: '@/pages/list' },
       ]
     }
   ],
   proxy: {
     '/verbCenter': {
-      'target': 'http://192.168.2.104:8111/verbCenter',
+      // 'target': 'http://192.168.8.113:8111/verbCenter',
+      'target': 'http://192.168.8.233:8111/verbCenter',
       'changeOrigin': true,
       'pathRewrite': { '^/verbCenter' : '' },
       'secure': false,

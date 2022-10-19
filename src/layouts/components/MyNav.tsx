@@ -1,4 +1,8 @@
+import type {
+  FC,
+} from 'react'
 import React, { useState } from 'react'
+import { generatePath, history } from 'umi'
 import {
   AppBar,
   Toolbar,
@@ -33,6 +37,11 @@ import {
 } from '@material-ui/core/styles'
 import QuickAddDialog from './QuickAddDialog'
 import ModuleAddDialog from './ModuleAddDialog'
+import LogDialog from './LogDialog'
+import type {
+  CardListInterface,
+  LogInterface,
+} from '@/pages/type'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -153,6 +162,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     appTitle: {
+      cursor: 'pointer',
       opacity: '0.5',
       position: 'absolute',
       left: '50%',
@@ -167,8 +177,25 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-const MyNavigation = () => {
+export interface MyNavigationProps {
+  canDelete: boolean
+  handleChangeDeleteStatus: (flag: boolean) => void
+  speedDialShow: boolean
+  handleChangeSpeedDialShow: (flag: boolean) => void
+  navigationList: CardListInterface[]
+  refresh: () => void
+}
+
+const MyNavigation: FC<MyNavigationProps> = (props) => {
   const classes = useStyles()
+  const {
+    canDelete,
+    handleChangeDeleteStatus,
+    speedDialShow,
+    handleChangeSpeedDialShow,
+    navigationList,
+    refresh,
+  } = props
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null)
   const [appAnchorEl, setAppAnchorEl] = useState<null | HTMLElement>(null)
@@ -232,10 +259,48 @@ const MyNavigation = () => {
     handleMenuClose()
   }
 
+  const handleSetDeleteStatus = () => {
+    handleChangeDeleteStatus(!canDelete)
+    handleMenuClose()
+  }
+
+  const handleSetSpeedDialShow= () => {
+    handleChangeSpeedDialShow(!speedDialShow)
+    handleMenuClose()
+  }
+
+  // 代码仓库地址
   const handleToRepository = () => {
     const link = 'https://github.com/royghu201901/qlinyun-nav'
     window.open(link, '_blank')
     handleMenuClose()
+  }
+
+  // 关注列表长度
+  const favoriteList: object[] = []
+  navigationList.map(item => {
+    item.cards.map(card => {
+      if (card.label === 1) {
+          favoriteList.push(card)
+        }
+    })
+  })
+
+  // 日志弹窗
+  const [logDialogShow, setLogDialogShow] = useState(false)
+  const handleOpenLogDialog = () => {
+    setLogDialogShow(true)
+  }
+
+  const handlePushRoute = (type?: string) => {
+    if (type) {
+      const path = generatePath('/:type', { type })
+      history.push(path)
+      handleAppMenuClose()
+    } else {
+      history.push('/')
+      handleAppMenuClose()
+    }
   }
 
   // 右侧菜单
@@ -265,7 +330,8 @@ const MyNavigation = () => {
       <MenuItem className={classes.renderMenuItem} onClick={() => handleOpenModuleAddDialog(false)}>添加模块</MenuItem>
       <MenuItem className={classes.renderMenuItem} onClick={() => handleOpenModuleAddDialog(true)}>编辑模块</MenuItem>
       <MenuItem className={classes.renderMenuItem} onClick={handleOpenQuickAddDialog}>添加导航地址</MenuItem>
-      <MenuItem className={classes.renderMenuItem} onClick={handleMenuClose}>删除导航地址</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={handleSetDeleteStatus}>{canDelete ? '取消删除' : '删除导航地址'}</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={handleSetSpeedDialShow}>{speedDialShow ? '关闭快速拨号' : '开启快速拨号'}</MenuItem>
       <Divider className={classes.divider} variant="middle" />
       <MenuItem className={classes.renderMenuItem} onClick={handleToRepository}>代码仓库地址</MenuItem>
     </Menu>
@@ -284,8 +350,8 @@ const MyNavigation = () => {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge overlap="rectangular" badgeContent={4} color="secondary">
+        <IconButton aria-label="show more favorite" color="inherit">
+          <Badge overlap="rectangular" badgeContent={favoriteList.length} color="secondary">
             <FavoriteIcon />
           </Badge>
         </IconButton>
@@ -313,16 +379,21 @@ const MyNavigation = () => {
       open={isAppMenuOpen}
       onClose={handleAppMenuClose}
     >
-      <MenuItem className={classes.renderMenuItem}>全部导航</MenuItem>
-      <MenuItem className={classes.renderMenuItem}>关注列表</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={() => handlePushRoute()}>全部导航</MenuItem>
+      <MenuItem className={classes.renderMenuItem} onClick={() => handlePushRoute('favorite')}>关注列表</MenuItem>
       <Divider className={classes.divider} variant="middle" />
       <MenuItem className={classes.renderMenuItem}>内部系统导航</MenuItem>
-      <Divider className={classes.divider} variant="middle" />
       <MenuItem className={classes.renderMenuItem}>开发环境导航</MenuItem>
       <MenuItem className={classes.renderMenuItem}>测试环境导航</MenuItem>
       <MenuItem className={classes.renderMenuItem}>正式环境导航</MenuItem>
     </Menu>
   )
+
+  // 日志列表
+  const [logList, setLogList] = useState<LogInterface[]>([])
+  const handleSetLogList = (data: LogInterface[]) => {
+    setLogList(data)
+  }
 
   return (
     <div className={classes.myNav}>
@@ -337,9 +408,6 @@ const MyNavigation = () => {
           >
             <AppsIcon />
           </IconButton>
-          {/* <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
-          </Typography> */}
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -354,7 +422,7 @@ const MyNavigation = () => {
             />
           </div>
           <div className={classes.appTitleFlex}>
-            <div className={classes.appTitle}>
+            <div className={classes.appTitle} onClick={() => handlePushRoute()}>
               国贸数字研发部导航
             </div>
           </div>
@@ -365,15 +433,25 @@ const MyNavigation = () => {
               </IconButton>
             </Tooltip>
             <Tooltip title="关注列表" arrow TransitionComponent={Zoom}>
-              <IconButton aria-label="show more favover" color="inherit" className={classes.navBtn}>
-                <Badge overlap="rectangular" badgeContent={4} color="secondary">
+              <IconButton
+                aria-label="show more favorite"
+                color="inherit"
+                className={classes.navBtn}
+                onClick={() => handlePushRoute('favorite')}
+              >
+                <Badge overlap="rectangular" badgeContent={favoriteList.length} color="secondary">
                   <FavoriteIcon />
                 </Badge>
               </IconButton>
             </Tooltip>
             <Tooltip title="操作日志" arrow TransitionComponent={Zoom}>
-              <IconButton aria-label="show more notifications" color="inherit" className={classes.navBtn}>
-                <Badge overlap="rectangular" badgeContent={17} color="secondary">
+              <IconButton
+                aria-label="show more notifications"
+                color="inherit"
+                className={classes.navBtn}
+                onClick={handleOpenLogDialog}
+              >
+                <Badge overlap="rectangular" badgeContent={logList.length} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -405,8 +483,9 @@ const MyNavigation = () => {
       {appMenu}
       {renderMobileMenu}
       {renderMenu}
-      <QuickAddDialog open={quickAddDialogOpen} onClose={() => handleCloseQuickAddDialog()} />
+      <QuickAddDialog open={quickAddDialogOpen} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
       <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} onClose={() => handleCloseModuleAddDialog()} />
+      <LogDialog open={logDialogShow} logList={logList} setLog={handleSetLogList} onClose={() => setLogDialogShow(false)} />
     </div>
   )
 }

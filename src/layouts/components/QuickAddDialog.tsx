@@ -37,7 +37,7 @@ import {
 
 import type {
   ModuleProps,
-  CardProps
+  CardProps,
 } from '@/pages/type'
 
 import {
@@ -73,10 +73,11 @@ export interface QuickAddDialogProps {
   id?: number
   navData?: CardProps
   open: boolean
+  refresh: () => void
   onClose: () => void
 }
 
-const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
+const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,refresh,onClose}) => {
   const classes = useStyles()
 
   const [navCard, setNavCard] = useState<CardProps>({
@@ -118,7 +119,7 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
   const handleChangeLabel = (event: ChangeEvent<HTMLInputElement>) => {
     setNavCard({
       ...navCard,
-      [event.target.name]: event.target.checked
+      [event.target.name]: event.target.checked ? 1 : 0
     })
   }
 
@@ -157,11 +158,19 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
   const handleSubmit = async () => {
     try {
       await saveWebsiteApi<CardProps>(navCard)
+      setNavCard({
+        title: '',
+        image: '',
+        description: '',
+        url: '',
+        label: 0,
+        environmentId: undefined
+      })
       onClose()
+      refresh()
     } catch (e: any) {
       setErrorMessage(e.message)
       setErrorShow(true)
-      // console.log(e.message)
     }
   }
 
@@ -196,9 +205,9 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,onClose}) => {
                 id="quick-dialog-select"
                 value={moduleData}
                 size="small"
+                clearOnBlur={false}
                 options={moduleList}
                 getOptionLabel={(moduleItem: ModuleProps) => moduleItem.name}
-                getOptionSelected={(option,moduleItem) => option.id === moduleItem.id}
                 onChange={(event, value) => {
                   setNavCard({
                     ...navCard,

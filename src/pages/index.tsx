@@ -1,14 +1,15 @@
 import type { ChangeEvent } from 'react'
-import { useState, useEffect } from 'react'
+import {
+  useState,
+  // useEffect,
+} from 'react'
+import { useOutletContext } from 'umi'
 import type { Theme } from '@material-ui/core/styles'
 import {
   alpha,
   makeStyles,
   createStyles
 } from '@material-ui/core/styles'
-// import {
-//   grey
-// } from '@material-ui/core/colors'
 import {
   Box,
   IconButton,
@@ -31,14 +32,14 @@ import type {
   ModuleInterfaces,
   CardListInterface,
   ModuleProps,
+  ContextInterface,
 } from './type'
 
+import DeleteModualDialog from './components/DeleteModualDialog'
+
 import {
-  getNavigationListApi,
   saveModuleApi,
 } from '@/api/fetch'
-
-// import cardList from './data'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -113,19 +114,35 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:hover': {
         backgroundColor: alpha(theme.palette.common.black, 0.25)
       }
+    },
+    cancelDeleteBtn: {
+      position: 'absolute',
+      left: '50%',
+      transform: 'translate(-50%, 0)',
+      color: theme.palette.common.white,
+      backgroundColor: alpha(theme.palette.common.black, 0.32),
+      '&:hover': {
+        backgroundColor: alpha(theme.palette.common.black, 0.25)
+      }
     }
   })
 )
 
 const Module = (props: ModuleInterfaces) => {
   const classes = useStyles()
-  const { module, refresh } = props
+  const { canDelete, handleChangeDeleteStatus, module, refresh } = props
   const { id, name, cards } = module
+
+  // 取消卡片删除
+  const handleCancelDelete = () => {
+    handleChangeDeleteStatus(false)
+  }
 
   // 显示修改模块名称的输入框
   const [editStatus, setEditStatus] = useState(false)
   const handleShowTextField = () => {
     setEditStatus(true)
+    handleCancelDelete()
   }
 
   // 修改模块名称
@@ -138,6 +155,12 @@ const Module = (props: ModuleInterfaces) => {
       ...moduleData,
       name: event.target.value
     })
+  }
+
+  // 删除模块弹窗
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const handleShowDeleteDialog = () => {
+    setDeleteDialogOpen(true)
   }
 
   // 错误内容
@@ -178,6 +201,17 @@ const Module = (props: ModuleInterfaces) => {
               >
                 <EditIcon fontSize="small" />
               </IconButton>
+              {canDelete &&
+                <Button
+                  variant="contained"
+                  size="small"
+                  className={classes.cancelDeleteBtn}
+                  disableElevation
+                  onClick={handleCancelDelete}
+                >
+                  取消删除
+                </Button>
+              }
             </div>
           :
             <Fade in={editStatus}>
@@ -213,6 +247,15 @@ const Module = (props: ModuleInterfaces) => {
                   size="small"
                   className={classes.moduleSyncBtn}
                   disableElevation
+                  onClick={handleShowDeleteDialog}
+                >
+                  删除模块
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  className={classes.moduleSyncBtn}
+                  disableElevation
                   onClick={handleSyncCancel}
                 >
                   取消
@@ -240,6 +283,9 @@ const Module = (props: ModuleInterfaces) => {
           { errorMessage }
         </Alert>
       </Snackbar>
+      {deleteDialogOpen && id &&
+        <DeleteModualDialog id={id} name={name} open={deleteDialogOpen} refresh={refresh} onClose={() => setDeleteDialogOpen(false)} />
+      }
     </>
   )
 }
@@ -247,25 +293,9 @@ const Module = (props: ModuleInterfaces) => {
 const MyBoard = () => {
   const classes = useStyles()
 
-  const [loading, setLoading] = useState(false)
-
-  const [navigationList, setNavigationList] = useState<object[]>([])
-
-  const getNavigationList = async () => {
-    try {
-      setLoading(true)
-      const data = await getNavigationListApi<CardListInterface[]>()
-      setNavigationList(data)
-    } catch (e: any) {
-      console.log(e)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    getNavigationList()
-  },[])
+  const layoutContext = useOutletContext<ContextInterface>()
+  const { prop } = layoutContext
+  const { loading, canDelete, handleChangeDeleteStatus, navigationList, getNavigationList } = prop
 
   return (
     <div className={loading ? classes.loadingBoard : classes.myBoard}>
@@ -275,6 +305,8 @@ const MyBoard = () => {
             <Module
               index={index}
               key={module.id}
+              canDelete={canDelete}
+              handleChangeDeleteStatus={handleChangeDeleteStatus}
               module={module}
               refresh={getNavigationList}
             />

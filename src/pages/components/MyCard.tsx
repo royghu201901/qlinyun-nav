@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useOutletContext } from 'umi'
 import copy from 'copy-to-clipboard'
 import type { Theme } from '@material-ui/core/styles';
 import {
@@ -21,16 +22,19 @@ import Alert from '@material-ui/lab/Alert'
 import {
   Favorite as FavoriteIcon,
   Share as ShareIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  Close as CloseIcon,
 } from '@material-ui/icons'
 import { teal } from '@material-ui/core/colors'
 
 import type {
   CardProps,
+  ContextInterface,
 } from '../type'
 
 
 import QuickAddDialog from '@/layouts/components/QuickAddDialog'
+import DeleteCardDialog from './DeleteCardDialog'
 
 import {
   saveWebsiteApi,
@@ -40,6 +44,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       width: 345,
+      position: 'relative',
+      overflow: 'visible',
       marginBottom: theme.spacing(2),
       '&:hover': {
         boxShadow: alpha(theme.palette.common.black, 0.15),
@@ -50,17 +56,31 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     actions: {
       justifyContent: 'space-evenly'
-    }
+    },
+    delete: {
+      position: 'absolute',
+      top: theme.spacing(-2),
+      right: theme.spacing(-2),
+      color: theme.palette.common.white,
+      backgroundColor: alpha(theme.palette.common.black, 0.32),
+      '&:hover': {
+        backgroundColor: alpha(theme.palette.common.black, 0.25)
+      }
+    },
   })
 )
 
 export default function MyCard(props: CardProps) {
   const classes = useStyles()
   const { id, title, image, description, url, label } = props
-  const [favorite, setFavorite] = useState(!!label) 
+  const [favorite, setFavorite] = useState(!!label)
+
+  // 刷新接口
+  const layoutContext = useOutletContext<ContextInterface>()
+  const { prop } = layoutContext
+  const { canDelete, getNavigationList } = prop
 
   const [messageShow, setMessageShow] = useState(false)
-
 
   // 修改导航弹窗
   const [quickAddDialogOpen, setQuickAddDialogOpen] = useState(false)
@@ -71,6 +91,15 @@ export default function MyCard(props: CardProps) {
     setQuickAddDialogOpen(false)
   }
 
+  // 删除二次确认弹窗
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const handleOpenDeleteDialog = () => {
+    setDeleteDialogOpen(true)
+  }
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false)
+  }
+
   // 添加到关注列表
   const handleChangeFavorite = async () => {
     try {
@@ -79,6 +108,7 @@ export default function MyCard(props: CardProps) {
         label: favorite ? 0 : 1
       })
       setFavorite(!favorite)
+      getNavigationList()
     } catch (e: any) {
       console.log(e.message)
     }
@@ -127,6 +157,13 @@ export default function MyCard(props: CardProps) {
             <ShareIcon color="primary" />
           </IconButton>
         </CardActions>
+        <>
+          {canDelete &&
+            <IconButton className={classes.delete} size="small" aria-label="delete" onClick={handleOpenDeleteDialog}>
+              <CloseIcon />
+            </IconButton>
+          }
+        </>
       </Card>
       <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'center' }} open={messageShow} autoHideDuration={1000} onClose={() => setMessageShow(false)}>
         <Alert onClose={() => setMessageShow(false)} severity="success">
@@ -134,7 +171,10 @@ export default function MyCard(props: CardProps) {
         </Alert>
       </Snackbar>
       {quickAddDialogOpen &&
-        <QuickAddDialog id={id} navData={props} open={quickAddDialogOpen} onClose={() => handleCloseQuickAddDialog()} />
+        <QuickAddDialog id={id} navData={props} open={quickAddDialogOpen} refresh={getNavigationList} onClose={handleCloseQuickAddDialog} />
+      }
+      {deleteDialogOpen && id &&
+        <DeleteCardDialog id={id} title={title} open={deleteDialogOpen} refresh={getNavigationList} onClose={handleCloseDeleteDialog} />
       }
     </>
   )

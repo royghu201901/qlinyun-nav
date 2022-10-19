@@ -2,6 +2,7 @@ import axios from '@/utils/request';
 import type {
   ModuleProps,
   CardProps,
+  LogProps,
 } from '../pages/type';
 
 /**
@@ -9,7 +10,7 @@ import type {
  */
 export function getNavigationListApi<T>() {
   return axios.request<T>({
-    url: '/list'
+    url: '/environment/list'
   })
 }
 
@@ -18,7 +19,7 @@ export function getNavigationListApi<T>() {
  */
 export function getModuleListApi<T>() {
   return axios.request<T>({
-    url: '/down_pull'
+    url: '/environment/down_pull'
   })
 }
 
@@ -27,9 +28,18 @@ export function getModuleListApi<T>() {
  */
 export function saveModuleApi<T>(data: ModuleProps) {
   return axios.request<T>({
-    url: '/add_environment',
+    url: '/environment/add_environment',
     method: 'post',
     data
+  })
+}
+
+/**
+ * 删除模块
+ */
+export function deleteEnvironmentApi<T>(id: number) {
+  return axios.request<T>({
+    url: `/environment/delete_environment/${id}`
   })
 }
 
@@ -38,17 +48,27 @@ export function saveModuleApi<T>(data: ModuleProps) {
  */
 export function saveWebsiteApi<T>(data: CardProps) {
   return axios.request<T>({
-    url: '/add_website',
+    url: '/environment/add_website',
     method: 'post',
     data
   })
 }
 
 /**
- * 获取导航列表
+ * 删除导航
  */
 export function deleteWebsiteApi<T>(id: number) {
   return axios.request<T>({
-    url: `/delete_website/${id}`
+    url: `/environment/delete_website/${id}`
+  })
+}
+
+/**
+ * 获取日志
+ */
+export function getLogApi<T>(params: LogProps) {
+  return axios.request<T>({
+    url: '/log/list',
+    params
   })
 }
