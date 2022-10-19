@@ -147,18 +147,20 @@ const LogDialog: FC<LogDialogProps>  = ({open,logList,setLog,onClose}) => {
     }
   }
 
-  // // 修改起始日期
-  // const handleBeforeDateChange = (date: Dayjs | null) => {
-  //   setBeforeDate(date)
-  //   console.log('beforeDate===>', dayjs(beforeDate).date())
-  //   // getLogList()
-  // }
-  // // 修改结束日期
-  // const handleAfterDateChange = (date: Dayjs | null) => {
-  //   setAfterDate(date)
-  //   console.log('afterDate===>', dayjs(afterDate).date())
-  //   // getLogList()
-  // }
+  // 修改起始日期
+  const handleBeforeDateChange = (date: Dayjs | null) => {
+    setBeforeDate(date)
+    if (date && afterDate && date > afterDate) {
+      setAfterDate(date)
+    }
+  }
+  // 修改结束日期
+  const handleAfterDateChange = (date: Dayjs | null) => {
+    setAfterDate(date)
+    if (date && beforeDate && date < beforeDate) {
+      setBeforeDate(date)
+    }
+  }
 
   useEffect(() => {
     getLogList()
@@ -191,7 +193,7 @@ const LogDialog: FC<LogDialogProps>  = ({open,logList,setLog,onClose}) => {
                 label="日志起始日期"
                 format="YYYY-MM-DD"
                 value={beforeDate}
-                onChange={(date) => setBeforeDate(date)}
+                onChange={handleBeforeDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change start date',
                 }}
@@ -204,7 +206,7 @@ const LogDialog: FC<LogDialogProps>  = ({open,logList,setLog,onClose}) => {
                 label="日志结束时间"
                 format="YYYY-MM-DD"
                 value={afterDate}
-                onChange={(date) => setAfterDate(date)}
+                onChange={handleAfterDateChange}
                 KeyboardButtonProps={{
                   'aria-label': 'change end date',
                 }}
