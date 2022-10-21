@@ -10,10 +10,12 @@ import SpeedDials from './components/SpeedDials'
 
 import type {
   CardListInterface,
+  CardProps,
 } from '@/pages/type'
 
 import {
   getNavigationListApi,
+  getSearchListApi,
 } from '@/api/fetch'
 
 export default function Layout() {
@@ -34,6 +36,20 @@ export default function Layout() {
       const data = await getNavigationListApi<CardListInterface[]>()
       setNavigationList(data)
     } catch (e: any) {
+      console.log(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 搜索列表
+  const [searchList, setSearchList] = useState<CardProps[]>([])
+  const handleSubmitSearch = async (keyword: string) => {
+    try {
+      setLoading(true)
+      const data = await getSearchListApi<CardProps[]>({ keyword })
+      setSearchList(data)
+    } catch (e) {
       console.log(e)
     } finally {
       setLoading(false)
@@ -64,6 +80,7 @@ export default function Layout() {
         handleChangeDeleteStatus={handleChangeDeleteStatus}
         speedDialShow={speedDialShow}
         handleChangeSpeedDialShow={handleChangeSpeedDialShow}
+        handleSubmitSearch={handleSubmitSearch}
         refresh={getNavigationList}
       />
       <Outlet
@@ -73,10 +90,15 @@ export default function Layout() {
           handleChangeDeleteStatus,
           navigationList,
           getNavigationList,
+          searchList,
         }}}
       />
       {speedDialShow &&
-        <SpeedDials open={speedDialOpen} handleChangeSpeedDialStatus={handleChangeSpeedDialStatus}  />
+        <SpeedDials
+          open={speedDialOpen}
+          handleChangeSpeedDialStatus={handleChangeSpeedDialStatus}
+          refresh={getNavigationList} 
+        />
       }
       <Backdrop open={speedDialOpen} style={{ zIndex: 999 }} />
     </div>

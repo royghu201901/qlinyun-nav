@@ -2,7 +2,7 @@
 import type {
   FC,
 } from 'react'
-// import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { generatePath, history } from 'umi'
 import type { Theme } from '@material-ui/core/styles'
 import {
@@ -20,6 +20,7 @@ import {
   Home as HomeIcon,
   Navigation as NavigationIcon,
 } from '@material-ui/icons'
+import QuickAddDialog from './QuickAddDialog'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,9 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
 export interface SpeedDialsProps {
   open: boolean
   handleChangeSpeedDialStatus: (flag: boolean) => void
+  refresh: () => void
 }
 
-const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus}) => {
+const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus, refresh}) => {
   const classes = useStyles()
 
   const handleSpeedDialClose = () => {
@@ -64,11 +66,23 @@ const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus}) =>
   const handleBackToTop = () => {
     document.body.scrollTop = 0
     document.documentElement.scrollTop = 0
+    handleSpeedDialClose()
+  }
+
+  // 快速添加弹窗
+  const [quickAddDialogOpen, setQuickAddDialogOpen] = useState(false)
+  const handleOpenQuickAddDialog = () => {
+    setQuickAddDialogOpen(true)
+    handleSpeedDialClose()
+  }
+  const handleCloseQuickAddDialog = () => {
+    setQuickAddDialogOpen(false)
+    handleSpeedDialClose()
   }
 
   // 快捷按钮
   const actions = [
-    { icon: <AddIcon />, name: '快捷添加', onClick: () => handleSpeedDialClose() },
+    { icon: <AddIcon />, name: '快捷添加', onClick: () => handleOpenQuickAddDialog() },
     { icon: <FavoriteIcon />, name: '关注列表', onClick: () => handlePushRoute('favorite') },
     { icon: <HomeIcon />, name: '返回首页', onClick: () => handlePushRoute() },
     { icon: <NavigationIcon />, name: '回到顶部', onClick: () => handleBackToTop() },
@@ -94,6 +108,7 @@ const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus}) =>
           />
         ))}
       </SpeedDial>
+      <QuickAddDialog open={quickAddDialogOpen} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
     </>
   )
 }

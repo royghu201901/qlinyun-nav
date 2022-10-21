@@ -3,6 +3,8 @@ import type {
   ModuleProps,
   CardProps,
   LogProps,
+  SearchProps,
+  IdProps,
 } from '../pages/type';
 
 /**
@@ -69,6 +71,26 @@ export function deleteWebsiteApi<T>(id: number) {
 export function getLogApi<T>(params: LogProps) {
   return axios.request<T>({
     url: '/log/list',
+    params
+  })
+}
+
+/**
+ * 搜索
+ */
+export function getSearchListApi<T>(params: SearchProps) {
+  return axios.request<T>({
+    url: '/environment/search',
+    params
+  })
+}
+
+/**
+ * 搜索
+ */
+export function getNavigationListByIdApi<T>(params: IdProps) {
+  return axios.request<T>({
+    url: '/environment/website_list_by_environment_id',
     params
   })
 }

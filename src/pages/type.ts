@@ -38,6 +38,7 @@ export interface ContextProps {
   handleChangeDeleteStatus: (flag: boolean) => void
   navigationList: CardListInterface[]
   getNavigationList: () => void
+  searchList: CardProps[]
 }
 
 export interface LogProps {
@@ -51,4 +52,12 @@ export interface LogInterface {
   changeTime: string
   beforeMessage: string
   afterMessage: string
+}
+
+export interface SearchProps {
+  keyword: string
+}
+
+export interface IdProps {
+  environmentId: number
 }

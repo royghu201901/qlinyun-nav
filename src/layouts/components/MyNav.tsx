@@ -1,5 +1,6 @@
 import type {
   FC,
+  ChangeEvent,
 } from 'react'
 import React, { useState } from 'react'
 import { generatePath, history } from 'umi'
@@ -81,10 +82,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     searchIcon: {
-      padding: theme.spacing(0, 2),
+      color: 'inherit',
+      padding: theme.spacing(0, 1),
       height: '100%',
       position: 'absolute',
-      pointerEvents: 'none',
+      top: 0,
+      right: 0,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -94,9 +97,9 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '14px'
     },
     inputInput: {
-      padding: theme.spacing(1, 1, 1, 0),
+      padding: theme.spacing(1, 1, 1, 2),
       // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+      paddingRight: `calc(1em + ${theme.spacing(4)}px)`,
       transition: theme.transitions.create('width'),
       width: '100%',
       [theme.breakpoints.up('md')]: {
@@ -170,6 +173,7 @@ const useStyles = makeStyles((theme: Theme) =>
       transform: 'translate(-50%, 0)',
       fontWeight: 600,
       fontSize: '20px',
+      transition: 'all 300ms ease-in-out',
       '&:hover': {
         opacity: '0.75',
       },
@@ -183,6 +187,7 @@ export interface MyNavigationProps {
   speedDialShow: boolean
   handleChangeSpeedDialShow: (flag: boolean) => void
   navigationList: CardListInterface[]
+  handleSubmitSearch: (keyword: string) => void
   refresh: () => void
 }
 
@@ -194,6 +199,7 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
     speedDialShow,
     handleChangeSpeedDialShow,
     navigationList,
+    handleSubmitSearch,
     refresh,
   } = props
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -292,15 +298,28 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
     setLogDialogShow(true)
   }
 
-  const handlePushRoute = (type?: string) => {
+  // 搜索框
+  const [searchValue, setSearchValue] = useState('')
+  const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value)
+  }
+
+  const handlePushRoute = (type?: string, id?: string) => {
     if (type) {
-      const path = generatePath('/:type', { type })
+      const path = id
+        ? generatePath('/:type/:id', { type, id })
+        : generatePath('/:type', { type })
       history.push(path)
       handleAppMenuClose()
     } else {
       history.push('/')
       handleAppMenuClose()
     }
+  }
+
+  const handlePushRouteWithSearch = (keyword: string) => {
+    handleSubmitSearch(keyword)
+    handlePushRoute('list')
   }
 
   // 右侧菜单
@@ -382,10 +401,18 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
       <MenuItem className={classes.renderMenuItem} onClick={() => handlePushRoute()}>全部导航</MenuItem>
       <MenuItem className={classes.renderMenuItem} onClick={() => handlePushRoute('favorite')}>关注列表</MenuItem>
       <Divider className={classes.divider} variant="middle" />
-      <MenuItem className={classes.renderMenuItem}>内部系统导航</MenuItem>
-      <MenuItem className={classes.renderMenuItem}>开发环境导航</MenuItem>
-      <MenuItem className={classes.renderMenuItem}>测试环境导航</MenuItem>
-      <MenuItem className={classes.renderMenuItem}>正式环境导航</MenuItem>
+      {navigationList.map((nav) => {
+        return (
+          <MenuItem
+            className={classes.renderMenuItem}
+            key={nav.id}
+            value={nav.id}
+            onClick={() => handlePushRoute('list', (nav.id).toString())}
+          >
+            {nav.name}
+          </MenuItem>
+        )
+      })}
     </Menu>
   )
 
@@ -409,17 +436,28 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
             <AppsIcon />
           </IconButton>
           <div className={classes.search}>
-            <div className={classes.searchIcon}>
+            {/* <div className={classes.searchIcon}>
               <SearchIcon />
-            </div>
+            </div> */}
             <InputBase
+              value={searchValue}
               placeholder="搜索关键词…"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              onChange={handleChangeSearch}
             />
+            <IconButton
+              type="submit"
+              size="small"
+              className={classes.searchIcon}
+              aria-label="search"
+              onClick={() => handlePushRouteWithSearch(searchValue)}
+            >
+              <SearchIcon />
+            </IconButton>
           </div>
           <div className={classes.appTitleFlex}>
             <div className={classes.appTitle} onClick={() => handlePushRoute()}>

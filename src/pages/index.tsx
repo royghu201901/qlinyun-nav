@@ -35,7 +35,7 @@ import type {
   ContextInterface,
 } from './type'
 
-import DeleteModualDialog from './components/DeleteModualDialog'
+import DeleteModuleDialog from './components/DeleteModuleDialog'
 
 import {
   saveModuleApi,
@@ -284,7 +284,7 @@ const Module = (props: ModuleInterfaces) => {
         </Alert>
       </Snackbar>
       {deleteDialogOpen && id &&
-        <DeleteModualDialog id={id} name={name} open={deleteDialogOpen} refresh={refresh} onClose={() => setDeleteDialogOpen(false)} />
+        <DeleteModuleDialog id={id} name={name} open={deleteDialogOpen} refresh={refresh} onClose={() => setDeleteDialogOpen(false)} />
       }
     </>
   )

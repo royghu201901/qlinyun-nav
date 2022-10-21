@@ -7,6 +7,7 @@ export default {
       routes: [
         { path: '/', component: '@/pages/index' },
         { path: '/:type', component: '@/pages/list' },
+        { path: '/:type/:id', component: '@/pages/list' },
       ]
     }
   ],
