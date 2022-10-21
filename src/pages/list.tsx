@@ -139,16 +139,18 @@ const MyBoard = () => {
 
   return (
     <div className={loading ? classes.loadingBoard : classes.myBoard}>
-      <Button
-        variant="contained"
-        size="small"
-        className={classes.backToHomeBtn}
-        disableElevation
-        startIcon={<HomeIcon />}
-        onClick={handlePushBackToHome}
-      >
-        返回首页
-      </Button>
+      {!loading &&
+        <Button
+          variant="contained"
+          size="small"
+          className={classes.backToHomeBtn}
+          disableElevation
+          startIcon={<HomeIcon />}
+          onClick={handlePushBackToHome}
+        >
+          返回首页
+        </Button>
+      }
       {canDelete &&
         <Button
           variant="contained"
