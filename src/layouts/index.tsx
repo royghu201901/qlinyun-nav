@@ -12,7 +12,7 @@ import type {
   CardListInterface,
   CardProps,
   ModuleProps,
-} from '@/pages/type'
+} from '@/types'
 
 import {
   getNavigationListApi,

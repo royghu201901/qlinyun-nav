@@ -45,7 +45,7 @@ import type {
   CardListInterface,
   LogInterface,
   ModuleProps,
-} from '@/pages/type'
+} from '@/types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -38,7 +38,7 @@ import {
 import type {
   ModuleProps,
   CardProps,
-} from '@/pages/type'
+} from '@/types'
 
 import {
   saveWebsiteApi,

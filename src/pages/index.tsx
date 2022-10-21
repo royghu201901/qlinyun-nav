@@ -33,7 +33,7 @@ import type {
   CardListInterface,
   ModuleProps,
   ContextInterface,
-} from './type'
+} from '@/types'
 
 import DeleteModuleDialog from './components/DeleteModuleDialog'
 

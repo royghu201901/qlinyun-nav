@@ -1,6 +1,6 @@
 import type {
   CardListInterface,
-} from './type'
+} from '@/types'
 
 const cardList: CardListInterface[] = [
   {

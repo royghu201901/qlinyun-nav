@@ -23,7 +23,7 @@ import {
 import QuickAddDialog from './QuickAddDialog'
 import type {
   ModuleProps,
-} from '@/pages/type'
+} from '@/types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -24,7 +24,7 @@ import MyCard from './components/MyCard'
 import type {
   ContextInterface,
   CardProps,
-} from './type'
+} from '@/types'
 
 import {
   getNavigationListByIdApi,

@@ -32,7 +32,7 @@ import {
 
 import type {
   ModuleProps,
-} from '@/pages/type'
+} from '@/types'
 
 import {
   // getModuleListApi,

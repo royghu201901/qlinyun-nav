@@ -47,7 +47,7 @@ import {
 
 import type {
   LogInterface
-} from '@/pages/type'
+} from '@/types'
 
 import {
   getLogApi,

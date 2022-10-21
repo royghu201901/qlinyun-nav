@@ -20,7 +20,7 @@ import {
 
 import type {
   ContextInterface,
-} from '../type'
+} from '@/types'
 
 import {
   deleteEnvironmentApi,

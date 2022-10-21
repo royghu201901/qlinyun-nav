@@ -30,7 +30,7 @@ import { teal } from '@material-ui/core/colors'
 import type {
   CardProps,
   ContextInterface,
-} from '../type'
+} from '@/types'
 
 
 import QuickAddDialog from '@/layouts/components/QuickAddDialog'
