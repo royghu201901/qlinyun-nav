@@ -4,8 +4,6 @@ import type {
 } from 'react'
 import {
   useState,
-  useEffect,
-  // useCallback,
 } from 'react'
 import {
   Button,
@@ -37,7 +35,7 @@ import type {
 } from '@/pages/type'
 
 import {
-  getModuleListApi,
+  // getModuleListApi,
   saveModuleApi,
 } from '@/api/fetch'
 
@@ -71,10 +69,11 @@ const useStyles = makeStyles((theme: Theme) =>
 export interface ModuleAddDialogProps {
   editFlag: boolean
   open: boolean
+  moduleList: ModuleProps[]
   onClose: () => void
 }
 
-const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,onClose}) => {
+const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,moduleList,onClose}) => {
   const classes = useStyles()
 
   // 选择模块
@@ -90,16 +89,6 @@ const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,onClose}) => {
   })
 
   const [moduleName, setModuleName] = useState('')
-
-  const [moduleList, setModuleList] = useState<ModuleProps[]>([])
-  const getModuleList = async () => {
-    try {
-      const data = await getModuleListApi<ModuleProps[]>()
-      setModuleList(data)
-    } catch (e: any) {
-      console.log(e)
-    }
-  }
 
   const handleChangeSelectedeData = (value: ModuleProps | null) => {
     setSelectedeData(value)
@@ -156,10 +145,6 @@ const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,onClose}) => {
       // console.log(e.message)
     }
   }
-
-  useEffect(() => {
-    if (editFlag) getModuleList()
-  },[editFlag])
 
   return (
     <>

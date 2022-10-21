@@ -41,7 +41,6 @@ import type {
 } from '@/pages/type'
 
 import {
-  getModuleListApi,
   saveWebsiteApi,
 } from '@/api/fetch'
 
@@ -73,11 +72,12 @@ export interface QuickAddDialogProps {
   id?: number
   navData?: CardProps
   open: boolean
+  moduleList: ModuleProps[]
   refresh: () => void
   onClose: () => void
 }
 
-const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,refresh,onClose}) => {
+const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,moduleList,refresh,onClose}) => {
   const classes = useStyles()
 
   const [navCard, setNavCard] = useState<CardProps>({
@@ -123,15 +123,15 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,refresh,onClos
     })
   }
 
-  const [moduleList, setModuleList] = useState<ModuleProps[]>([])
-  const getModuleList = async () => {
-    try {
-      const data = await getModuleListApi<ModuleProps[]>()
-      setModuleList(data)
-    } catch (e: any) {
-      console.log(e)
-    }
-  }
+  // const [moduleList, setModuleList] = useState<ModuleProps[]>([])
+  // const getModuleList = async () => {
+  //   try {
+  //     const data = await getModuleListApi<ModuleProps[]>()
+  //     setModuleList(data)
+  //   } catch (e: any) {
+  //     console.log(e)
+  //   }
+  // }
 
   // 取消按钮，清空表单
   const handleCancel = (event: any, reason: string) => {
@@ -173,10 +173,6 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,refresh,onClos
       setErrorShow(true)
     }
   }
-
-  useEffect(() => {
-    getModuleList()
-  },[])
 
   useEffect(() => {
     initNavData()

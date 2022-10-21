@@ -42,6 +42,7 @@ import LogDialog from './LogDialog'
 import type {
   CardListInterface,
   LogInterface,
+  ModuleProps,
 } from '@/pages/type'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -187,6 +188,7 @@ export interface MyNavigationProps {
   speedDialShow: boolean
   handleChangeSpeedDialShow: (flag: boolean) => void
   navigationList: CardListInterface[]
+  moduleList: ModuleProps[]
   handleSubmitSearch: (keyword: string) => void
   refresh: () => void
 }
@@ -199,6 +201,7 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
     speedDialShow,
     handleChangeSpeedDialShow,
     navigationList,
+    moduleList,
     handleSubmitSearch,
     refresh,
   } = props
@@ -521,8 +524,8 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
       {appMenu}
       {renderMobileMenu}
       {renderMenu}
-      <QuickAddDialog open={quickAddDialogOpen} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
-      <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} onClose={() => handleCloseModuleAddDialog()} />
+      <QuickAddDialog open={quickAddDialogOpen} moduleList={moduleList} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
+      <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} moduleList={moduleList} onClose={() => handleCloseModuleAddDialog()} />
       <LogDialog open={logDialogShow} logList={logList} setLog={handleSetLogList} onClose={() => setLogDialogShow(false)} />
     </div>
   )

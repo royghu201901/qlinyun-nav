@@ -78,7 +78,8 @@ export default function MyCard(props: CardProps) {
   // 刷新接口
   const layoutContext = useOutletContext<ContextInterface>()
   const { prop } = layoutContext
-  const { canDelete, getNavigationList } = prop
+  const { moduleList, canDelete, getNavigationList } = prop
+  console.log(moduleList)
 
   const [messageShow, setMessageShow] = useState(false)
 
@@ -171,7 +172,7 @@ export default function MyCard(props: CardProps) {
         </Alert>
       </Snackbar>
       {quickAddDialogOpen &&
-        <QuickAddDialog id={id} navData={props} open={quickAddDialogOpen} refresh={getNavigationList} onClose={handleCloseQuickAddDialog} />
+        <QuickAddDialog id={id} navData={props} open={quickAddDialogOpen} moduleList={moduleList} refresh={getNavigationList} onClose={handleCloseQuickAddDialog} />
       }
       {deleteDialogOpen && id &&
         <DeleteCardDialog id={id} title={title} open={deleteDialogOpen} refresh={getNavigationList} onClose={handleCloseDeleteDialog} />

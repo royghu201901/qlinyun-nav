@@ -21,6 +21,9 @@ import {
   Navigation as NavigationIcon,
 } from '@material-ui/icons'
 import QuickAddDialog from './QuickAddDialog'
+import type {
+  ModuleProps,
+} from '@/pages/type'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,11 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface SpeedDialsProps {
   open: boolean
+  moduleList: ModuleProps[]
   handleChangeSpeedDialStatus: (flag: boolean) => void
   refresh: () => void
 }
 
-const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus, refresh}) => {
+const SpeedDials: FC<SpeedDialsProps> = ({open, moduleList, handleChangeSpeedDialStatus, refresh}) => {
   const classes = useStyles()
 
   const handleSpeedDialClose = () => {
@@ -108,7 +112,7 @@ const SpeedDials: FC<SpeedDialsProps> = ({open, handleChangeSpeedDialStatus, ref
           />
         ))}
       </SpeedDial>
-      <QuickAddDialog open={quickAddDialogOpen} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
+      <QuickAddDialog open={quickAddDialogOpen} moduleList={moduleList} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
     </>
   )
 }

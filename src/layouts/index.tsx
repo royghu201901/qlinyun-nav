@@ -11,11 +11,13 @@ import SpeedDials from './components/SpeedDials'
 import type {
   CardListInterface,
   CardProps,
+  ModuleProps,
 } from '@/pages/type'
 
 import {
   getNavigationListApi,
   getSearchListApi,
+  getModuleListApi,
 } from '@/api/fetch'
 
 export default function Layout() {
@@ -39,6 +41,17 @@ export default function Layout() {
       console.log(e)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 模块下拉列表
+  const [moduleList, setModuleList] = useState<ModuleProps[]>([])
+  const getModuleList = async () => {
+    try {
+      const data = await getModuleListApi<ModuleProps[]>()
+      setModuleList(data)
+    } catch (e: any) {
+      console.log(e)
     }
   }
 
@@ -69,6 +82,7 @@ export default function Layout() {
 
   useEffect(() => {
     getNavigationList()
+    getModuleList()
   },[])
 
   return (
@@ -76,6 +90,7 @@ export default function Layout() {
       <img src="https://i.loli.net/2021/06/25/GzfZAoDdp89MQNY.jpg" alt="bg.jpg" className={styles.bg} draggable="false" />
       <MyNav
         navigationList={navigationList}
+        moduleList={moduleList}
         canDelete={canDelete}
         handleChangeDeleteStatus={handleChangeDeleteStatus}
         speedDialShow={speedDialShow}
@@ -91,11 +106,13 @@ export default function Layout() {
           navigationList,
           getNavigationList,
           searchList,
+          moduleList,
         }}}
       />
       {speedDialShow &&
         <SpeedDials
           open={speedDialOpen}
+          moduleList={moduleList}
           handleChangeSpeedDialStatus={handleChangeSpeedDialStatus}
           refresh={getNavigationList} 
         />

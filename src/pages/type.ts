@@ -39,6 +39,7 @@ export interface ContextProps {
   navigationList: CardListInterface[]
   getNavigationList: () => void
   searchList: CardProps[]
+  moduleList: ModuleProps[]
 }
 
 export interface LogProps {
