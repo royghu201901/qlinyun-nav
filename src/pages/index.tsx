@@ -273,6 +273,7 @@ const Module = (props: ModuleInterfaces) => {
               description={card.description}
               url={card.url}
               label={card.label}
+              environmentId={id}
               environmentName={name}
             />
           ))}

@@ -1,6 +1,7 @@
 import type {
   FC,
   ChangeEvent,
+  MouseEvent,
 } from 'react'
 import React, { useState } from 'react'
 import { generatePath, history } from 'umi'
@@ -20,6 +21,7 @@ import {
   Divider,
   Tooltip,
   Zoom,
+  Paper,
 } from '@material-ui/core'
 import {
   Apps as AppsIcon,
@@ -70,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
+      color: theme.palette.common.white,
       backgroundColor: alpha(theme.palette.common.white, 0.15),
       '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
@@ -320,7 +323,8 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
     }
   }
 
-  const handlePushRouteWithSearch = (keyword: string) => {
+  const handlePushRouteWithSearch = (event: MouseEvent, keyword: string) => {
+    event.preventDefault()
     handleSubmitSearch(keyword)
     handlePushRoute('list')
   }
@@ -438,10 +442,7 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
           >
             <AppsIcon />
           </IconButton>
-          <div className={classes.search}>
-            {/* <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div> */}
+          <Paper elevation={0} component="form" className={classes.search}>
             <InputBase
               value={searchValue}
               placeholder="搜索关键词…"
@@ -457,11 +458,11 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
               size="small"
               className={classes.searchIcon}
               aria-label="search"
-              onClick={() => handlePushRouteWithSearch(searchValue)}
+              onClick={(event) => handlePushRouteWithSearch(event, searchValue)}
             >
               <SearchIcon />
             </IconButton>
-          </div>
+          </Paper>
           <div className={classes.appTitleFlex}>
             <div className={classes.appTitle} onClick={() => handlePushRoute()}>
               国贸数字研发部导航
@@ -525,7 +526,7 @@ const MyNavigation: FC<MyNavigationProps> = (props) => {
       {renderMobileMenu}
       {renderMenu}
       <QuickAddDialog open={quickAddDialogOpen} moduleList={moduleList} refresh={refresh} onClose={() => handleCloseQuickAddDialog()} />
-      <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} moduleList={moduleList} onClose={() => handleCloseModuleAddDialog()} />
+      <ModuleAddDialog editFlag={moduleAddDialogFlag} open={moduleAddDialogOpen} moduleList={moduleList} refresh={refresh} onClose={() => handleCloseModuleAddDialog()} />
       <LogDialog open={logDialogShow} logList={logList} setLog={handleSetLogList} onClose={() => setLogDialogShow(false)} />
     </div>
   )

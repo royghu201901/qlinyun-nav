@@ -123,16 +123,6 @@ const QuickAddDialog: FC<QuickAddDialogProps> = ({id,navData,open,moduleList,ref
     })
   }
 
-  // const [moduleList, setModuleList] = useState<ModuleProps[]>([])
-  // const getModuleList = async () => {
-  //   try {
-  //     const data = await getModuleListApi<ModuleProps[]>()
-  //     setModuleList(data)
-  //   } catch (e: any) {
-  //     console.log(e)
-  //   }
-  // }
-
   // 取消按钮，清空表单
   const handleCancel = (event: any, reason: string) => {
     if (reason && reason === 'backdropClick') {

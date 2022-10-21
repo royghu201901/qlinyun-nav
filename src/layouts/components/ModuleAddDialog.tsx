@@ -70,10 +70,11 @@ export interface ModuleAddDialogProps {
   editFlag: boolean
   open: boolean
   moduleList: ModuleProps[]
+  refresh: () => void
   onClose: () => void
 }
 
-const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,moduleList,onClose}) => {
+const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,moduleList,refresh,onClose}) => {
   const classes = useStyles()
 
   // 选择模块
@@ -139,10 +140,10 @@ const ModuleAddDialog: FC<ModuleAddDialogProps> = ({editFlag,open,moduleList,onC
     try {
       await saveModuleApi<ModuleProps>(moduleData)
       onClose()
+      refresh()
     } catch (e: any) {
       setErrorMessage(e.message)
       setErrorShow(true)
-      // console.log(e.message)
     }
   }
 

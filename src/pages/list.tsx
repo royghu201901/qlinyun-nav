@@ -101,6 +101,7 @@ const MyBoard = () => {
   navigationList.map(item => {
     item.cards.map(card => {
       if (card.label === 1) {
+          card.environmentId = item.id
           card.environmentName = item.name
           favoriteList.push(card)
         }
