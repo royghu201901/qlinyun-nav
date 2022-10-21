@@ -79,7 +79,6 @@ export default function MyCard(props: CardProps) {
   const layoutContext = useOutletContext<ContextInterface>()
   const { prop } = layoutContext
   const { moduleList, canDelete, getNavigationList } = prop
-  console.log(moduleList)
 
   const [messageShow, setMessageShow] = useState(false)
 
