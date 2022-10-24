@@ -6,6 +6,7 @@ export default {
       title: '国贸数字研发部导航',
       routes: [
         { path: '/', component: '@/pages/index' },
+        { path: '/404', component: '@/pages/404' },
         { path: '/:type', component: '@/pages/list' },
         { path: '/:type/:id', component: '@/pages/list' },
       ]

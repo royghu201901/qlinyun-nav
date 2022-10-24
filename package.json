@@ -19,6 +19,7 @@
     "copy-to-clipboard": "^3.3.2",
     "dayjs": "^1.11.5",
     "overlayscrollbars-react": "0.2.3",
+    "react-parallax-mouse": "^1.7.3",
     "umi": "^4.0.21"
   },
   "devDependencies": {
