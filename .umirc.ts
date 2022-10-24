@@ -13,8 +13,8 @@ export default {
   ],
   proxy: {
     '/verbCenter': {
-      // 'target': 'http://192.168.8.113:8111/verbCenter',
-      'target': 'http://192.168.8.233:8111/verbCenter',
+      'target': 'http://192.168.8.113:8111/verbCenter',
+      // 'target': 'http://192.168.8.233:8111/verbCenter',
       'changeOrigin': true,
       'pathRewrite': { '^/verbCenter' : '' },
       'secure': false,
