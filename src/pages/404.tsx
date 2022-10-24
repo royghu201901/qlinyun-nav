@@ -1,6 +1,7 @@
 
 
 import type { CSSProperties } from 'react'
+import { history } from 'umi'
 import {
   MouseParallaxChild,
   MouseParallaxContainer
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // width: '100%',
       height: '100vh',
       overflowX: 'hidden',
+      position: 'relative',
     },
     outerCircle: {
       width: '800px',
@@ -49,6 +51,22 @@ const useStyles = makeStyles((theme: Theme) =>
       color: alpha(theme.palette.common.white, 0.2),
       animationDelay: '1s',
       filter: 'blur(5px)',
+    },
+    backToHomeBtn: {
+      position: 'absolute',
+      left: '50%',
+      top: '65%',
+      transform: 'translate(-50%, 0)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: theme.spacing(5),
+      padding: theme.spacing(0, 4),
+      cursor: 'pointer',
+      zIndex: 300,
+      color: theme.palette.common.black,
+      backgroundColor: theme.palette.common.white,
+      fontWeight: 600,
     },
   })
 )
@@ -150,6 +168,14 @@ const NoFoundPage = () => {
             </Box>
           </MouseParallaxChild>
         </MouseParallaxContainer>
+        <Box
+          className={classes.backToHomeBtn}
+          borderRadius={50}
+          boxShadow={3}
+          onClick={() => history.push('/')}
+        >
+          返回首页
+        </Box>
       </Box>
     </>
   )
